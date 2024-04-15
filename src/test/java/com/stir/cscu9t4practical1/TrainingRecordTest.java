@@ -113,9 +113,7 @@ public class TrainingRecordTest {
   }
 
   /**
-   * Test of yet to be implemented findAllEntries, of class TrainingRecord
-   * Implement the method and then remove the "fail" line below and
-   * un-comment call to the method and the assertion line
+   * Test of findAllEntries, of class TrainingRecord
    */
   @Test
   public void testfindAllEntries() {
@@ -134,6 +132,29 @@ public class TrainingRecordTest {
     // un-comment the lines below when you've implemented the method
     String resultSuccess = instance.findAllEntries(d, m, y);
     String resultNone = instance.findAllEntries(d, m, 1999);
+    assertEquals(expectResultsNone, resultNone);
+    assertEquals(expectResults, resultSuccess);
+  }
+
+  /**
+   * Test of findByName, of class TrainingRecord
+   */
+  @Test
+  public void testfindByName() {
+    System.out.println("findByName");
+    String expectResultsNone = "No entries found";
+    String expectResults = "Alice trained for 00:16:07 on 01/02/2003\n"
+                           + "Alice trained for 01:17:08 on 02/03/2004\n";
+    TrainingRecord instance = new TrainingRecord();
+    Entry a = new Entry("Alice", 1, 2, 2003, 0, 16, 7);
+    Entry b = new Entry("Alice", 2, 3, 2004, 1, 17, 8);
+    Entry c = new Entry("Bob", 2, 3, 2004, 1, 17, 8);
+    instance.addEntry(a);
+    instance.addEntry(b);
+    instance.addEntry(c);
+    String name = "alice";
+    String resultSuccess = instance.findByName(name);
+    String resultNone = instance.findByName("Michael");
     assertEquals(expectResultsNone, resultNone);
     assertEquals(expectResults, resultSuccess);
   }
