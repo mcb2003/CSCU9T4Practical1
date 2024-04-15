@@ -12,11 +12,13 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private static final String GENERIC_ENTRY = "Generic";
   private static final String RUN_ENTRY = "Run";
   private static final String REPS_ENTRY = "Reps";
+  private static final String CYCLE_ENTRY = "Cycle";
+  private static final String SWIM_ENTRY = "Swim";
 
   // Global Entry fields
   private JPanel globalFields = new JPanel(new GridBagLayout());
-  private JComboBox<String> entryType =
-      new JComboBox<>(new String[] {GENERIC_ENTRY, RUN_ENTRY, REPS_ENTRY});
+  private JComboBox<String> entryType = new JComboBox<>(new String[] {
+      GENERIC_ENTRY, RUN_ENTRY, REPS_ENTRY, CYCLE_ENTRY, SWIM_ENTRY});
   private JTextField name = new JTextField(30);
   private JTextField day = new JTextField(2);
   private JTextField month = new JTextField(2);
@@ -64,6 +66,21 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JLabel labrtdist = new JLabel("Total Distance:");
   private JLabel labrep = new JLabel("Rep Distance:");
   private JLabel labrec = new JLabel("Recovery Time (mins):");
+
+  // Options for cycle Entry
+  private JPanel cycleCard = new JPanel(new GridBagLayout());
+  private JTextField cycleTotalDist = new JTextField(4);
+  private JTextField cycleTerrain = new JTextField(20);
+  private JTextField cycleTempo = new JTextField(4);
+  private JLabel labcdist = new JLabel("Total Distance:");
+  private JLabel labcterrain = new JLabel("Terrain:");
+  private JLabel labctempo = new JLabel("Tempo (RPM):");
+
+  // Options for swim Entry
+  private JPanel swimCard = new JPanel(new GridBagLayout());
+  private JTextField swimTotalDist = new JTextField(4);
+  private JLabel labsdist = new JLabel("Total Distance:");
+  private JCheckBox swimInPool = new JCheckBox("In Pool?");
 
   private JTextArea outputArea = new JTextArea(5, 50);
 
@@ -117,6 +134,23 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     addToGrid(repsCard, labrec, recMins);
     recMins.setEditable(true);
     addCard(repsCard, REPS_ENTRY);
+
+    addToGrid(cycleCard, labcdist, cycleTotalDist);
+    cycleTotalDist.setEditable(true);
+    addToGrid(cycleCard, labcterrain, cycleTerrain);
+    cycleTerrain.setEditable(true);
+    addToGrid(cycleCard, labctempo, cycleTempo);
+    cycleTempo.setEditable(true);
+    addCard(cycleCard, CYCLE_ENTRY);
+
+    addToGrid(swimCard, labsdist, swimTotalDist);
+    swimTotalDist.setEditable(true);
+    // Add the checkbox
+    GridBagConstraints c = new GridBagConstraints();
+    c.gridx = 1;
+    c.gridy = 1;
+    swimCard.add(swimInPool, c);
+    addCard(swimCard, SWIM_ENTRY);
 
     add(cards);
 
@@ -217,6 +251,16 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     // Add a new record of the given type
     if (what.equals(GENERIC_ENTRY)) {
       e = new Entry(n, d, m, y, h, mm, s);
+    } else if (what.equals(RUN_ENTRY)) {
+      // Validate Run specific fields
+      float dist;
+      try {
+        dist = Float.parseFloat(runTotalDist.getText());
+      } catch (NumberFormatException err) {
+        return "Input is not a number: " + err.getLocalizedMessage();
+      }
+      e = new Run(n, d, m, y, h, mm, s, dist);
+
     } else if (what.equals(REPS_ENTRY)) {
       // Validate Reps specific fields
       float dist, repLength;
@@ -229,15 +273,30 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         return "Input is not a number: " + err.getLocalizedMessage();
       }
       e = new Reps(n, d, m, y, h, mm, s, dist, repLength, recTime);
-    } else if (what.equals(RUN_ENTRY)) {
-      // Validate Run specific fields
-      float dist;
+
+    } else if (what.equals(CYCLE_ENTRY)) {
+      // Validate Cycle specific fields
+      float dist, tempo;
+      String terrain = cycleTerrain.getText();
       try {
-        dist = Float.parseFloat(runTotalDist.getText());
+        dist = Float.parseFloat(cycleTotalDist.getText());
+        tempo = Float.parseFloat(cycleTempo.getText());
       } catch (NumberFormatException err) {
         return "Input is not a number: " + err.getLocalizedMessage();
       }
-      e = new Run(n, d, m, y, h, mm, s, dist);
+      e = new Cycle(n, d, m, y, h, mm, s, dist, terrain, tempo);
+
+    } else if (what.equals(SWIM_ENTRY)) {
+      // Validate Swim specific fields
+      float dist;
+      try {
+        dist = Float.parseFloat(swimTotalDist.getText());
+      } catch (NumberFormatException err) {
+        return "Input is not a number: " + err.getLocalizedMessage();
+      }
+      Boolean inPool = swimInPool.isSelected();
+      e = new Swim(n, d, m, y, h, mm, s, dist, inPool);
+
     } else {
       return "Invalid Entry type: " + what;
     }
@@ -285,6 +344,11 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     repsTotalDist.setText("");
     repDist.setText("");
     recMins.setText("");
+    cycleTotalDist.setText("");
+    cycleTerrain.setText("");
+    cycleTempo.setText("");
+    swimTotalDist.setText("");
+    swimInPool.setSelected(false);
 
   } // blankDisplay
   // Fills the input fields on the display for testing purposes only
@@ -315,6 +379,23 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       // Show the correct type and panel
       entryType.setSelectedItem(REPS_ENTRY);
       cl.show(cards, REPS_ENTRY);
+    } else if (ent instanceof Cycle) {
+      Cycle cycle = (Cycle)ent;
+      // Fill Reps specific fields
+      cycleTotalDist.setText(String.valueOf(cycle.getDistance()));
+      cycleTerrain.setText(cycle.getTerrain());
+      cycleTempo.setText(String.valueOf(cycle.getTempo()));
+      // Show the correct type and panel
+      entryType.setSelectedItem(CYCLE_ENTRY);
+      cl.show(cards, CYCLE_ENTRY);
+    } else if (ent instanceof Swim) {
+      Swim swim = (Swim)ent;
+      // Fill Reps specific fields
+      swimTotalDist.setText(String.valueOf(swim.getDistance()));
+      swimInPool.setSelected(swim.getInPool());
+      // Show the correct type and panel
+      entryType.setSelectedItem(SWIM_ENTRY);
+      cl.show(cards, SWIM_ENTRY);
     } else {
       entryType.setSelectedItem(GENERIC_ENTRY);
       cl.show(cards, GENERIC_ENTRY);
