@@ -48,6 +48,30 @@ public class TrainingRecordTest {
   }
 
   /**
+   * Test of removeEntry method, of class TrainingRecord.
+   * You might want to extend this test when you implement the other
+   * Entry types
+   */
+  @Test
+  public void testremoveEntry() {
+    System.out.println("removeEntry");
+    TrainingRecord instance = new TrainingRecord();
+    Entry a = new Entry("Alice", 1, 2, 2003, 0, 16, 7);
+    instance.addEntry(a);
+    assertEquals(instance.getNumberOfEntries(), 1);
+    String name = "Alice";
+    int d = 1;
+    int m = 2;
+    int y = 2003;
+    Boolean expResultA = true;
+    Boolean result = instance.removeEntry(name, d, m, y);
+    assertEquals(expResultA, result, "Entry should be removed");
+    Boolean expResultB = false;
+    result = instance.removeEntry("Bob", 2, 3, 2004);
+    assertEquals(expResultB, result, "Entry shouldn't be found");
+  }
+
+  /**
    * Test of addEntry with a repeat
    * Adding another entry for the same person on the same day should fail
    */
