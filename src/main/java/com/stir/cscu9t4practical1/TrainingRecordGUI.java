@@ -115,10 +115,14 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   public String addEntry(String what) {
     String message = "Record added\n";
     System.out.println("Adding " + what + " entry to the records");
+
+    // Get and validate name
     String n = name.getText();
     if (n.isEmpty()) {
       return "Invalid input: Name is required";
     }
+
+    // Get and validate numeric fields
     int m, d, y;
     float km;
     int h, mm, s;
@@ -133,7 +137,15 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     } catch (NumberFormatException e) {
       return "Input is not a number: " + e.getLocalizedMessage();
     }
-    Entry e = new Entry(n, d, m, y, h, mm, s, km);
+
+    // Check for uniqueness
+    Entry e = myAthletes.findExactEntry(n, d, m, y);
+    if (e != null) {
+      // An entry already exists
+      return "Record already added!\n" + e.getEntry();
+    }
+
+    e = new Entry(n, d, m, y, h, mm, s, km);
     myAthletes.addEntry(e);
     return message;
   }

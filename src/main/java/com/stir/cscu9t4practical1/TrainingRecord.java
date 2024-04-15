@@ -43,6 +43,21 @@ public class TrainingRecord {
     return result.toString();
   } // findAllEntries
 
+  // Find an exact entry by name and date
+  public Entry findExactEntry(String n, int d, int m, int y) {
+    ListIterator<Entry> iter = tr.listIterator();
+    // Linear search through entries
+    while (iter.hasNext()) {
+      Entry current = iter.next();
+      if (current.getName().equals(n) && current.getDay() == d &&
+          current.getMonth() == m && current.getYear() == y) {
+        // Found match
+        return current;
+      }
+    }
+    return null;
+  } // findAllEntries
+
   // Count the number of entries
   public int getNumberOfEntries() { return tr.size(); }
   // Clear all entries
