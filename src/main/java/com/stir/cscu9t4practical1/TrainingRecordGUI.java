@@ -24,7 +24,6 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JTextField mins = new JTextField(2);
   private JTextField secs = new JTextField(2);
   private JTextField dist = new JTextField(4);
-
   private JLabel labt = new JLabel("Entry Type:");
   private JLabel labn = new JLabel(" Name:");
   private JLabel labd = new JLabel(" Day:");
@@ -42,6 +41,23 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JButton findAllByDate = new JButton("Find All");
 
   private TrainingRecord myAthletes = new TrainingRecord();
+
+  // A deck of cards, one per Entry type, with options specific to that type
+  // CardLayouts show only one child control at a time,. This one is controled
+  // by the entryType combobox
+  private JPanel cards = new JPanel(new CardLayout());
+
+  // Options for Generic Entry (there aren't any)
+  private JPanel genericCard = new JPanel();
+  private JLabel genericCardMessage =
+      new JLabel("No options specific to " + GENERIC_ENTRY + " Entry");
+
+  // Options for Run Entry
+  private JPanel runCard = new JPanel(new GridBagLayout());
+  private JTextField repDist = new JTextField(4);
+  private JTextField recMins = new JTextField(2);
+  private JLabel labrep = new JLabel("Rep Distance:");
+  private JLabel labrec = new JLabel("Recovery Time (mins):");
 
   private JTextArea outputArea = new JTextArea(5, 50);
 
@@ -82,6 +98,16 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     dist.setEditable(true);
     add(globalFields);
 
+    genericCardMessage.setFocusable(true);
+    genericCard.add(genericCardMessage);
+    addCard(genericCard, GENERIC_ENTRY);
+
+    addToGrid(runCard, labrep, repDist);
+    addToGrid(runCard, labrec, recMins);
+    addCard(runCard, RUN_ENTRY);
+
+    add(cards);
+
     actionsPanel.getAccessibleContext().setAccessibleName("Actions");
     actionsPanel.add(addR);
     addR.setMnemonic(KeyEvent.VK_A);
@@ -118,6 +144,12 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     label.setLabelFor(control);
   }
 
+  // Add a card to the card deck, setting its accessible name
+  private void addCard(Component card, String name) {
+    card.getAccessibleContext().setAccessibleName(name + " Entry Options");
+    cards.add(card, name);
+  }
+
   // listen for and respond to GUI events
   public void actionPerformed(ActionEvent event) {
     String message = "";
@@ -129,7 +161,11 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     } else if (event.getSource() == findAllByDate) {
       message = findAllEntries();
     } else if (event.getSource() == entryType) {
-      message = "Entry type set to " + (String)entryType.getSelectedItem();
+      // Show options for the newly selected Entry type
+      CardLayout cl = (CardLayout)(cards.getLayout());
+      String newCard = (String)entryType.getSelectedItem();
+      cl.show(cards, newCard);
+      message = "Entry type set to " + newCard;
     }
     outputArea.setText(message);
     blankDisplay();
