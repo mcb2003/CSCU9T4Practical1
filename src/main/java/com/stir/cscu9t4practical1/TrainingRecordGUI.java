@@ -8,7 +8,14 @@ import java.util.*;
 import javax.swing.*;
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
+  // Constants for Entry types
+  private static final String GENERIC_ENTRY = "Generic";
+  private static final String RUN_ENTRY = "Run";
 
+  // Global Entry fields
+  private JPanel globalFields = new JPanel(new GridBagLayout());
+  private JComboBox<String> entryType =
+      new JComboBox<>(new String[] {GENERIC_ENTRY, RUN_ENTRY});
   private JTextField name = new JTextField(30);
   private JTextField day = new JTextField(2);
   private JTextField month = new JTextField(2);
@@ -17,6 +24,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JTextField mins = new JTextField(2);
   private JTextField secs = new JTextField(2);
   private JTextField dist = new JTextField(4);
+
+  private JLabel labt = new JLabel("Entry Type:");
   private JLabel labn = new JLabel(" Name:");
   private JLabel labd = new JLabel(" Day:");
   private JLabel labm = new JLabel(" Month:");
@@ -25,6 +34,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JLabel labmm = new JLabel(" Mins:");
   private JLabel labs = new JLabel(" Secs:");
   private JLabel labdist = new JLabel(" Distance (km):");
+
+  // Buttons that perform actions
+  private JPanel actionsPanel = new JPanel(new FlowLayout());
   private JButton addR = new JButton("Add");
   private JButton lookUpByDate = new JButton("Look Up");
   private JButton findAllByDate = new JButton("Find All");
@@ -44,49 +56,44 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     // while developing it. Feel free to adopt the changes into this project for
     // next year!
     super("Training Record");
+
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setLayout(new FlowLayout());
-    add(labn);
-    add(name);
+    setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
+
+    // Fields applicable to all Entry types
+    globalFields.getAccessibleContext().setAccessibleName("Global Fields");
+    addToGrid(globalFields, labt, entryType);
+    entryType.addActionListener(this);
+    addToGrid(globalFields, labn, name);
     name.setEditable(true);
-    labn.setLabelFor(name);
-    add(labd);
-    add(day);
+    addToGrid(globalFields, labd, day);
     day.setEditable(true);
-    labd.setLabelFor(day);
-    add(labm);
-    add(month);
+    addToGrid(globalFields, labm, month);
     month.setEditable(true);
-    labm.setLabelFor(month);
-    add(laby);
-    add(year);
+    addToGrid(globalFields, laby, year);
     year.setEditable(true);
-    laby.setLabelFor(year);
-    add(labh);
-    add(hours);
+    addToGrid(globalFields, labh, hours);
     hours.setEditable(true);
-    labh.setLabelFor(hours);
-    add(labmm);
-    add(mins);
+    addToGrid(globalFields, labmm, mins);
     mins.setEditable(true);
-    labmm.setLabelFor(mins);
-    add(labs);
-    add(secs);
+    addToGrid(globalFields, labs, secs);
     secs.setEditable(true);
-    labs.setLabelFor(secs);
-    add(labdist);
-    add(dist);
+    addToGrid(globalFields, labdist, dist);
     dist.setEditable(true);
-    labdist.setLabelFor(dist);
-    add(addR);
+    add(globalFields);
+
+    actionsPanel.getAccessibleContext().setAccessibleName("Actions");
+    actionsPanel.add(addR);
     addR.setMnemonic(KeyEvent.VK_A);
     addR.addActionListener(this);
-    add(lookUpByDate);
+    actionsPanel.add(lookUpByDate);
     lookUpByDate.setMnemonic(KeyEvent.VK_L);
     lookUpByDate.addActionListener(this);
-    add(findAllByDate);
+    actionsPanel.add(findAllByDate);
     findAllByDate.setMnemonic(KeyEvent.VK_F);
     findAllByDate.addActionListener(this);
+    add(actionsPanel);
+
     add(outputArea);
     outputArea.setEditable(false);
     outputArea.getAccessibleContext().setAccessibleName("Output area");
@@ -99,15 +106,30 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
   } // constructor
 
+  // Add a label and its associated control to a row of a Container using a
+  // GridBagLayout
+  private void addToGrid(Container grid, JLabel label, Component control) {
+    GridBagConstraints c = new GridBagConstraints();
+    c.gridx = 0;
+    c.gridy = GridBagConstraints.RELATIVE;
+    grid.add(label, c);
+    c.gridx = GridBagConstraints.REMAINDER;
+    grid.add(control, c);
+    label.setLabelFor(control);
+  }
+
   // listen for and respond to GUI events
   public void actionPerformed(ActionEvent event) {
     String message = "";
     if (event.getSource() == addR) {
-      message = addEntry("generic");
+      String selectedEntryType = (String)entryType.getSelectedItem();
+      message = addEntry(selectedEntryType);
     } else if (event.getSource() == lookUpByDate) {
       message = lookupEntry();
     } else if (event.getSource() == findAllByDate) {
       message = findAllEntries();
+    } else if (event.getSource() == entryType) {
+      message = "Entry type set to " + (String)entryType.getSelectedItem();
     }
     outputArea.setText(message);
     blankDisplay();
