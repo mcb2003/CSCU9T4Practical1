@@ -89,7 +89,17 @@ public class TrainingRecord {
 
   // Count the number of entries
   public int getNumberOfEntries() { return tr.size(); }
+
   // Clear all entries
   public void clearAllEntries() { tr.clear(); }
+
+  public Boolean removeEntry(String name, int d, int m, int y) {
+    Entry e = findExactEntry(name, d, m, y);
+    if (e != null) {
+      tr.remove(e);
+      return true;
+    }
+    return false;
+  }
 
 } // TrainingRecord

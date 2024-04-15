@@ -41,6 +41,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JButton lookUpByDate = new JButton("Look Up");
   private JButton findAllByDate = new JButton("Find All");
   private JButton findAllByName = new JButton("Find by Name");
+  private JButton removeButton = new JButton("Remove");
 
   private TrainingRecord myAthletes = new TrainingRecord();
 
@@ -168,6 +169,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     actionsPanel.add(findAllByName);
     findAllByName.setMnemonic(KeyEvent.VK_D);
     findAllByName.addActionListener(this);
+    actionsPanel.add(removeButton);
+    removeButton.setMnemonic(KeyEvent.VK_R);
+    removeButton.addActionListener(this);
     add(actionsPanel);
 
     add(outputArea);
@@ -212,6 +216,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       message = findAllEntries();
     } else if (event.getSource() == findAllByName) {
       message = findByName();
+    } else if (event.getSource() == removeButton) {
+      message = removeEntry();
     } else if (event.getSource() == entryType) {
       // Show options for the newly selected Entry type
       CardLayout cl = (CardLayout)(cards.getLayout());
@@ -340,6 +346,23 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       return "Invalid input: Name is required";
     }
     return myAthletes.findByName(n);
+  }
+
+  public String removeEntry() {
+    String n = name.getText();
+    int m, d, y;
+    try {
+      m = Integer.parseInt(month.getText());
+      d = Integer.parseInt(day.getText());
+      y = Integer.parseInt(year.getText());
+    } catch (NumberFormatException err) {
+      return "Input is not a number: " + err.getLocalizedMessage();
+    }
+    outputArea.setText("Removing entry ...");
+    if (myAthletes.removeEntry(n, d, m, y)) {
+      return "Entry removed";
+    }
+    return "Entry not found";
   }
 
   public void blankDisplay() {
