@@ -4,30 +4,29 @@ package com.stir.cscu9t4practical1;
 
 public class RepsEntry extends DistanceEntry {
   private float repDistance;
-  private int recoveryMins;
+  private int recovery;
 
-  public RepsEntry(String n, int d, int m, int y, int h, int min, int s, float dist,
-              float repDist, int recMins) {
+  public RepsEntry(String n, int d, int m, int y, int h, int min, int s,
+                   float dist, float repDist, int recovery) {
     super(n, d, m, y, h, min, s, dist); // Call base ctor
     repDistance = repDist;
-    recoveryMins = recMins;
+    this.recovery = recovery;
   }
 
   // Getters:
 
   public float getRepDistance() { return repDistance; }
 
-  public int getRecoveryMins() { return recoveryMins; }
+  public int getRecovery() { return recovery; }
 
-  public float getNumRepsEntry() { return getDistance() / repDistance; }
+  public float getNumReps() { return getDistance() / repDistance; }
 
   @Override
   public String getEntry() {
     return String.format(
         "%s ran %g %g km reps = %g km, with %d mins recovery, in %02d:%02d:%02d on %02d/%02d/%d\n",
-        getName(), getNumRepsEntry(), getRepDistance(), getDistance(),
-        getRecoveryMins(), getHour(), getMin(), getSec(), getDay(), getMonth(),
-        getYear());
+        getName(), getNumReps(), getRepDistance(), getDistance(), getRecovery(),
+        getHour(), getMin(), getSec(), getDay(), getMonth(), getYear());
   }
 
 } // RepsEntry

@@ -9,7 +9,15 @@ public class TrainingRecord {
   public TrainingRecord() { tr = new ArrayList<Entry>(); } // constructor
 
   // add a record to the list
-  public void addEntry(Entry e) { tr.add(e); } // addClass
+  public Boolean addEntry(Entry e) {
+    Entry existing =
+        findExactEntry(e.getName(), e.getDay(), e.getMonth(), e.getYear());
+    if (existing != null) {
+      return false; // Duplicate entry, e not added
+    }
+    tr.add(e);
+    return true;
+  } // addEntry
 
   // look up the entry of a given day and month
   public String lookupEntry(int d, int m, int y) {

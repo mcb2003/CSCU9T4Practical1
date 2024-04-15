@@ -62,7 +62,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JPanel repsCard = new JPanel(new GridBagLayout());
   private JTextField repsTotalDist = new JTextField(4);
   private JTextField repDist = new JTextField(4);
-  private JTextField recMins = new JTextField(2);
+  private JTextField recovery = new JTextField(2);
   private JLabel labrtdist = new JLabel("Total Distance:");
   private JLabel labrep = new JLabel("Rep Distance:");
   private JLabel labrec = new JLabel("Recovery Time (mins):");
@@ -131,8 +131,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     repsTotalDist.setEditable(true);
     addToGrid(repsCard, labrep, repDist);
     repDist.setEditable(true);
-    addToGrid(repsCard, labrec, recMins);
-    recMins.setEditable(true);
+    addToGrid(repsCard, labrec, recovery);
+    recovery.setEditable(true);
     addCard(repsCard, REPS_ENTRY);
 
     addToGrid(cycleCard, labcdist, cycleTotalDist);
@@ -241,13 +241,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       return "Input is not a number: " + err.getLocalizedMessage();
     }
 
-    // Check for uniqueness
-    Entry e = myAthletes.findExactEntry(n, d, m, y);
-    if (e != null) {
-      // An entry already exists
-      return "Record already added!\n" + e.getEntry();
-    }
-
+    Entry e;
     // Add a new record of the given type
     if (what.equals(GENERIC_ENTRY)) {
       e = new Entry(n, d, m, y, h, mm, s);
@@ -268,7 +262,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       try {
         dist = Float.parseFloat(repsTotalDist.getText());
         repLength = Float.parseFloat(repDist.getText());
-        recTime = Integer.parseInt(recMins.getText());
+        recTime = Integer.parseInt(recovery.getText());
       } catch (NumberFormatException err) {
         return "Input is not a number: " + err.getLocalizedMessage();
       }
@@ -300,7 +294,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     } else {
       return "Invalid Entry type: " + what;
     }
-    myAthletes.addEntry(e);
+    if (!myAthletes.addEntry(e)) {
+      message = "Entry already exists!";
+    }
     return message;
   }
 
@@ -343,7 +339,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     runTotalDist.setText("");
     repsTotalDist.setText("");
     repDist.setText("");
-    recMins.setText("");
+    recovery.setText("");
     cycleTotalDist.setText("");
     cycleTerrain.setText("");
     cycleTempo.setText("");
@@ -355,14 +351,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   public void fillDisplay(Entry ent) {
     CardLayout cl = (CardLayout)(cards.getLayout());
 
-    name.setText(ent.getName());
-    day.setText(String.valueOf(ent.getDay()));
-    month.setText(String.valueOf(ent.getMonth()));
-    year.setText(String.valueOf(ent.getYear()));
-    hours.setText(String.valueOf(ent.getHour()));
-    mins.setText(String.valueOf(ent.getMin()));
-    secs.setText(String.valueOf(ent.getSec()));
-
+    // Set subclass specific fields
     if (ent instanceof RunEntry) {
       RunEntry run = (RunEntry)ent;
       // Fill RepsEntry specific fields
@@ -370,15 +359,17 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       // Show the correct type and panel
       entryType.setSelectedItem(RUN_ENTRY);
       cl.show(cards, RUN_ENTRY);
+
     } else if (ent instanceof RepsEntry) {
       RepsEntry reps = (RepsEntry)ent;
       // Fill RepsEntry specific fields
       repsTotalDist.setText(String.valueOf(reps.getDistance()));
       repDist.setText(String.valueOf(reps.getDistance()));
-      recMins.setText(String.valueOf(reps.getRecoveryMins()));
+      recovery.setText(String.valueOf(reps.getRecovery()));
       // Show the correct type and panel
       entryType.setSelectedItem(REPS_ENTRY);
       cl.show(cards, REPS_ENTRY);
+
     } else if (ent instanceof CycleEntry) {
       CycleEntry cycle = (CycleEntry)ent;
       // Fill RepsEntry specific fields
@@ -388,6 +379,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       // Show the correct type and panel
       entryType.setSelectedItem(CYCLE_ENTRY);
       cl.show(cards, CYCLE_ENTRY);
+
     } else if (ent instanceof SwimEntry) {
       SwimEntry swim = (SwimEntry)ent;
       // Fill RepsEntry specific fields
@@ -396,10 +388,20 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       // Show the correct type and panel
       entryType.setSelectedItem(SWIM_ENTRY);
       cl.show(cards, SWIM_ENTRY);
+
     } else {
       entryType.setSelectedItem(GENERIC_ENTRY);
       cl.show(cards, GENERIC_ENTRY);
     }
+
+    // Set global fields
+    name.setText(ent.getName());
+    day.setText(String.valueOf(ent.getDay()));
+    month.setText(String.valueOf(ent.getMonth()));
+    year.setText(String.valueOf(ent.getYear()));
+    hours.setText(String.valueOf(ent.getHour()));
+    mins.setText(String.valueOf(ent.getMin()));
+    secs.setText(String.valueOf(ent.getSec()));
   }
 
 } // TrainingRecordGUI
