@@ -161,15 +161,19 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     addR.setMnemonic(KeyEvent.VK_A);
     addR.addActionListener(this);
     actionsPanel.add(lookUpByDate);
+    lookUpByDate.setEnabled(false);
     lookUpByDate.setMnemonic(KeyEvent.VK_L);
     lookUpByDate.addActionListener(this);
     actionsPanel.add(findAllByDate);
+    findAllByDate.setEnabled(false);
     findAllByDate.setMnemonic(KeyEvent.VK_F);
     findAllByDate.addActionListener(this);
     actionsPanel.add(findAllByName);
+    findAllByName.setEnabled(false);
     findAllByName.setMnemonic(KeyEvent.VK_D);
     findAllByName.addActionListener(this);
     actionsPanel.add(removeButton);
+    removeButton.setEnabled(false);
     removeButton.setMnemonic(KeyEvent.VK_R);
     removeButton.addActionListener(this);
     add(actionsPanel);
@@ -309,6 +313,13 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     if (!myAthletes.addEntry(e)) {
       message = "Entry already exists!";
     }
+
+    // Entry was successfully added, activate buttons
+    lookUpByDate.setEnabled(true);
+    findAllByDate.setEnabled(true);
+    findAllByName.setEnabled(true);
+    removeButton.setEnabled(true);
+
     return message;
   }
 
@@ -360,6 +371,13 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     }
     outputArea.setText("Removing entry ...");
     if (myAthletes.removeEntry(n, d, m, y)) {
+      // Set enabled state of buttons appropriately
+      if (myAthletes.getNumberOfEntries() == 0) {
+        lookUpByDate.setEnabled(false);
+        findAllByDate.setEnabled(false);
+        findAllByName.setEnabled(false);
+        removeButton.setEnabled(false);
+      }
       return "Entry removed";
     }
     return "Entry not found";
