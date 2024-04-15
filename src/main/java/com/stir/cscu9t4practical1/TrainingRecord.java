@@ -45,7 +45,7 @@ public class TrainingRecord {
         result.append(current.getEntry());
       }
     }
-    if (result.length() == 0) {
+    if (result.isEmpty()) {
       return "No entries found";
     }
     return result.toString();
@@ -65,6 +65,27 @@ public class TrainingRecord {
     }
     return null;
   } // findAllEntries
+
+  // Perform a case-insensative, partial name search
+  public String findByName(String name) {
+    name = name.toLowerCase();
+
+    StringBuilder result = new StringBuilder();
+    ListIterator<Entry> iter = tr.listIterator();
+    // Linear search through entries
+    while (iter.hasNext()) {
+      Entry current = iter.next();
+      String currentName = current.getName().toLowerCase();
+      if (currentName.indexOf(name) != -1) {
+        // Found match
+        result.append(current.getEntry());
+      }
+    }
+    if (result.isEmpty()) {
+      return "No entries found";
+    }
+    return result.toString();
+  }
 
   // Count the number of entries
   public int getNumberOfEntries() { return tr.size(); }

@@ -40,6 +40,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JButton addR = new JButton("Add");
   private JButton lookUpByDate = new JButton("Look Up");
   private JButton findAllByDate = new JButton("Find All");
+  private JButton findAllByName = new JButton("Find by Name");
 
   private TrainingRecord myAthletes = new TrainingRecord();
 
@@ -164,6 +165,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     actionsPanel.add(findAllByDate);
     findAllByDate.setMnemonic(KeyEvent.VK_F);
     findAllByDate.addActionListener(this);
+    actionsPanel.add(findAllByName);
+    findAllByName.setMnemonic(KeyEvent.VK_D);
+    findAllByName.addActionListener(this);
     add(actionsPanel);
 
     add(outputArea);
@@ -206,6 +210,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       message = lookupEntry();
     } else if (event.getSource() == findAllByDate) {
       message = findAllEntries();
+    } else if (event.getSource() == findAllByName) {
+      message = findByName();
     } else if (event.getSource() == entryType) {
       // Show options for the newly selected Entry type
       CardLayout cl = (CardLayout)(cards.getLayout());
@@ -326,6 +332,14 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     outputArea.setText("looking up record[s] ...");
     String message = myAthletes.findAllEntries(d, m, y);
     return message;
+  }
+
+  public String findByName() {
+    String n = name.getText();
+    if (n.isEmpty()) {
+      return "Invalid input: Name is required";
+    }
+    return myAthletes.findByName(n);
   }
 
   public void blankDisplay() {
