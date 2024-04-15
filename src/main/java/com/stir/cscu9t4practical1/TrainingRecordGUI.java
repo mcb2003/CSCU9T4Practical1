@@ -23,7 +23,6 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JTextField hours = new JTextField(2);
   private JTextField mins = new JTextField(2);
   private JTextField secs = new JTextField(2);
-  private JTextField dist = new JTextField(4);
   private JLabel labt = new JLabel("Entry Type:");
   private JLabel labn = new JLabel(" Name:");
   private JLabel labd = new JLabel(" Day:");
@@ -32,7 +31,6 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JLabel labh = new JLabel(" Hours:");
   private JLabel labmm = new JLabel(" Mins:");
   private JLabel labs = new JLabel(" Secs:");
-  private JLabel labdist = new JLabel(" Distance (km):");
 
   // Buttons that perform actions
   private JPanel actionsPanel = new JPanel(new FlowLayout());
@@ -54,8 +52,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
   // Options for Run Entry
   private JPanel runCard = new JPanel(new GridBagLayout());
+  private JTextField runDist = new JTextField(4);
   private JTextField repDist = new JTextField(4);
   private JTextField recMins = new JTextField(2);
+  private JLabel labrdist = new JLabel("Total Distance:");
   private JLabel labrep = new JLabel("Rep Distance:");
   private JLabel labrec = new JLabel("Recovery Time (mins):");
 
@@ -94,16 +94,18 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     mins.setEditable(true);
     addToGrid(globalFields, labs, secs);
     secs.setEditable(true);
-    addToGrid(globalFields, labdist, dist);
-    dist.setEditable(true);
     add(globalFields);
 
     genericCardMessage.setFocusable(true);
     genericCard.add(genericCardMessage);
     addCard(genericCard, GENERIC_ENTRY);
 
+    addToGrid(runCard, labrdist, runDist);
+    runDist.setEditable(true);
     addToGrid(runCard, labrep, repDist);
+    repDist.setEditable(true);
     addToGrid(runCard, labrec, recMins);
+    recMins.setEditable(true);
     addCard(runCard, RUN_ENTRY);
 
     add(cards);
@@ -183,18 +185,16 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
     // Get and validate numeric fields
     int m, d, y;
-    float km;
     int h, mm, s;
     try {
       m = Integer.parseInt(month.getText());
       d = Integer.parseInt(day.getText());
       y = Integer.parseInt(year.getText());
-      km = java.lang.Float.parseFloat(dist.getText());
       h = Integer.parseInt(hours.getText());
       mm = Integer.parseInt(mins.getText());
       s = Integer.parseInt(secs.getText());
-    } catch (NumberFormatException e) {
-      return "Input is not a number: " + e.getLocalizedMessage();
+    } catch (NumberFormatException err) {
+      return "Input is not a number: " + err.getLocalizedMessage();
     }
 
     // Check for uniqueness
@@ -204,7 +204,24 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       return "Record already added!\n" + e.getEntry();
     }
 
-    e = new Entry(n, d, m, y, h, mm, s, km);
+    // Add a new record of the given type
+    if (what.equals(GENERIC_ENTRY)) {
+      e = new Entry(n, d, m, y, h, mm, s);
+    } else if (what.equals(RUN_ENTRY)) {
+      // Validate Run specific fields
+      float dist, repLength;
+      int recTime;
+      try {
+        dist = Float.parseFloat(runDist.getText());
+        repLength = Float.parseFloat(repDist.getText());
+        recTime = Integer.parseInt(recMins.getText());
+      } catch (NumberFormatException err) {
+        return "Input is not a number: " + err.getLocalizedMessage();
+      }
+      e = new Run(n, d, m, y, h, mm, s, dist, repLength, recTime);
+    } else {
+      return "Invalid Entry type: " + what;
+    }
     myAthletes.addEntry(e);
     return message;
   }
@@ -215,8 +232,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       m = Integer.parseInt(month.getText());
       d = Integer.parseInt(day.getText());
       y = Integer.parseInt(year.getText());
-    } catch (NumberFormatException e) {
-      return "Input is not a number: " + e.getLocalizedMessage();
+    } catch (NumberFormatException err) {
+      return "Input is not a number: " + err.getLocalizedMessage();
     }
     outputArea.setText("looking up record ...");
     String message = myAthletes.lookupEntry(d, m, y);
@@ -245,11 +262,15 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     hours.setText("");
     mins.setText("");
     secs.setText("");
-    dist.setText("");
+    runDist.setText("");
+    repDist.setText("");
+    recMins.setText("");
 
   } // blankDisplay
   // Fills the input fields on the display for testing purposes only
   public void fillDisplay(Entry ent) {
+    CardLayout cl = (CardLayout)(cards.getLayout());
+
     name.setText(ent.getName());
     day.setText(String.valueOf(ent.getDay()));
     month.setText(String.valueOf(ent.getMonth()));
@@ -257,7 +278,20 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     hours.setText(String.valueOf(ent.getHour()));
     mins.setText(String.valueOf(ent.getMin()));
     secs.setText(String.valueOf(ent.getSec()));
-    dist.setText(String.valueOf(ent.getDistance()));
+
+    if (ent instanceof Run) {
+      Run run = (Run)ent;
+      // Fill Run specific fields
+      runDist.setText(String.valueOf(run.getDistance()));
+      repDist.setText(String.valueOf(run.getDistance()));
+      recMins.setText(String.valueOf(run.getRecoveryMins()));
+      // Show the correct type and panel
+      entryType.setSelectedItem(RUN_ENTRY);
+      cl.show(cards, RUN_ENTRY);
+    } else {
+      entryType.setSelectedItem(GENERIC_ENTRY);
+      cl.show(cards, GENERIC_ENTRY);
+    }
   }
 
 } // TrainingRecordGUI
