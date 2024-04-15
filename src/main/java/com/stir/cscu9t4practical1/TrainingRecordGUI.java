@@ -44,6 +44,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     // while developing it. Feel free to adopt the changes into this project for
     // next year!
     super("Training Record");
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new FlowLayout());
     add(labn);
     add(name);
