@@ -1,5 +1,5 @@
 // This class holds information about a single running / sprinting training
-// session
+// session composed of several reps, with recovery in between
 package com.stir.cscu9t4practical1;
 
 public class Reps extends DistanceTraining {

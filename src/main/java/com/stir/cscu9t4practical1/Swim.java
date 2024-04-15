@@ -1,5 +1,4 @@
-// This class holds information about a single Swimning / sprinting training
-// session
+// This class holds information about a single Swimning training session
 package com.stir.cscu9t4practical1;
 
 public class Swim extends DistanceTraining {
