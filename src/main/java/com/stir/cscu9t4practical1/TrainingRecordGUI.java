@@ -116,31 +116,48 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     String message = "Record added\n";
     System.out.println("Adding " + what + " entry to the records");
     String n = name.getText();
-    int m = Integer.parseInt(month.getText());
-    int d = Integer.parseInt(day.getText());
-    int y = Integer.parseInt(year.getText());
-    float km = java.lang.Float.parseFloat(dist.getText());
-    int h = Integer.parseInt(hours.getText());
-    int mm = Integer.parseInt(mins.getText());
-    int s = Integer.parseInt(secs.getText());
+    int m, d, y;
+    float km;
+    int h, mm, s;
+    try {
+      m = Integer.parseInt(month.getText());
+      d = Integer.parseInt(day.getText());
+      y = Integer.parseInt(year.getText());
+      km = java.lang.Float.parseFloat(dist.getText());
+      h = Integer.parseInt(hours.getText());
+      mm = Integer.parseInt(mins.getText());
+      s = Integer.parseInt(secs.getText());
+    } catch (NumberFormatException e) {
+      return "Input is not a number: " + e.getLocalizedMessage();
+    }
     Entry e = new Entry(n, d, m, y, h, mm, s, km);
     myAthletes.addEntry(e);
     return message;
   }
 
   public String lookupEntry() {
-    int m = Integer.parseInt(month.getText());
-    int d = Integer.parseInt(day.getText());
-    int y = Integer.parseInt(year.getText());
+    int m, d, y;
+    try {
+      m = Integer.parseInt(month.getText());
+      d = Integer.parseInt(day.getText());
+      y = Integer.parseInt(year.getText());
+    } catch (NumberFormatException e) {
+      return "Input is not a number: " + e.getLocalizedMessage();
+    }
     outputArea.setText("looking up record ...");
     String message = myAthletes.lookupEntry(d, m, y);
     return message;
   }
 
   public String findAllEntries() {
-    int m = Integer.parseInt(month.getText());
-    int d = Integer.parseInt(day.getText());
-    int y = Integer.parseInt(year.getText());
+    int m, d, y;
+    try {
+      m = Integer.parseInt(month.getText());
+      d = Integer.parseInt(day.getText());
+      y = Integer.parseInt(year.getText());
+    } catch (NumberFormatException e) {
+      return "Input is not a number: " + e.getLocalizedMessage();
+    }
     outputArea.setText("looking up record[s] ...");
     String message = myAthletes.findAllEntries(d, m, y);
     return message;
