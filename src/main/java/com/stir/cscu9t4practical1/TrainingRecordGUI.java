@@ -105,8 +105,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       message = addEntry("generic");
     } else if (event.getSource() == lookUpByDate) {
       message = lookupEntry();
-    } else if (event.getSource() == lookUpByDate) {
-      message = "Not implemented";
+    } else if (event.getSource() == findAllByDate) {
+      message = findAllEntries();
     }
     outputArea.setText(message);
     blankDisplay();
@@ -134,6 +134,15 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     int y = Integer.parseInt(year.getText());
     outputArea.setText("looking up record ...");
     String message = myAthletes.lookupEntry(d, m, y);
+    return message;
+  }
+
+  public String findAllEntries() {
+    int m = Integer.parseInt(month.getText());
+    int d = Integer.parseInt(day.getText());
+    int y = Integer.parseInt(year.getText());
+    outputArea.setText("looking up record[s] ...");
+    String message = myAthletes.findAllEntries(d, m, y);
     return message;
   }
 
