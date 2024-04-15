@@ -10,12 +10,12 @@ import javax.swing.*;
 public class TrainingRecordGUI extends JFrame implements ActionListener {
   // Constants for Entry types
   private static final String GENERIC_ENTRY = "Generic";
-  private static final String RUN_ENTRY = "Run";
+  private static final String REPS_ENTRY = "Reps";
 
   // Global Entry fields
   private JPanel globalFields = new JPanel(new GridBagLayout());
   private JComboBox<String> entryType =
-      new JComboBox<>(new String[] {GENERIC_ENTRY, RUN_ENTRY});
+      new JComboBox<>(new String[] {GENERIC_ENTRY, REPS_ENTRY});
   private JTextField name = new JTextField(30);
   private JTextField day = new JTextField(2);
   private JTextField month = new JTextField(2);
@@ -50,12 +50,12 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JLabel genericCardMessage =
       new JLabel("No options specific to " + GENERIC_ENTRY + " Entry");
 
-  // Options for Run Entry
-  private JPanel runCard = new JPanel(new GridBagLayout());
-  private JTextField runDist = new JTextField(4);
+  // Options for reps Entry
+  private JPanel repsCard = new JPanel(new GridBagLayout());
+  private JTextField repsTotalDist = new JTextField(4);
   private JTextField repDist = new JTextField(4);
   private JTextField recMins = new JTextField(2);
-  private JLabel labrdist = new JLabel("Total Distance:");
+  private JLabel labrtdist = new JLabel("Total Distance:");
   private JLabel labrep = new JLabel("Rep Distance:");
   private JLabel labrec = new JLabel("Recovery Time (mins):");
 
@@ -100,13 +100,13 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     genericCard.add(genericCardMessage);
     addCard(genericCard, GENERIC_ENTRY);
 
-    addToGrid(runCard, labrdist, runDist);
-    runDist.setEditable(true);
-    addToGrid(runCard, labrep, repDist);
+    addToGrid(repsCard, labrtdist, repsTotalDist);
+    repsTotalDist.setEditable(true);
+    addToGrid(repsCard, labrep, repDist);
     repDist.setEditable(true);
-    addToGrid(runCard, labrec, recMins);
+    addToGrid(repsCard, labrec, recMins);
     recMins.setEditable(true);
-    addCard(runCard, RUN_ENTRY);
+    addCard(repsCard, REPS_ENTRY);
 
     add(cards);
 
@@ -207,18 +207,18 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     // Add a new record of the given type
     if (what.equals(GENERIC_ENTRY)) {
       e = new Entry(n, d, m, y, h, mm, s);
-    } else if (what.equals(RUN_ENTRY)) {
-      // Validate Run specific fields
+    } else if (what.equals(REPS_ENTRY)) {
+      // Validate Reps specific fields
       float dist, repLength;
       int recTime;
       try {
-        dist = Float.parseFloat(runDist.getText());
+        dist = Float.parseFloat(repsTotalDist.getText());
         repLength = Float.parseFloat(repDist.getText());
         recTime = Integer.parseInt(recMins.getText());
       } catch (NumberFormatException err) {
         return "Input is not a number: " + err.getLocalizedMessage();
       }
-      e = new Run(n, d, m, y, h, mm, s, dist, repLength, recTime);
+      e = new Reps(n, d, m, y, h, mm, s, dist, repLength, recTime);
     } else {
       return "Invalid Entry type: " + what;
     }
@@ -262,7 +262,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     hours.setText("");
     mins.setText("");
     secs.setText("");
-    runDist.setText("");
+    repsTotalDist.setText("");
     repDist.setText("");
     recMins.setText("");
 
@@ -279,15 +279,15 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     mins.setText(String.valueOf(ent.getMin()));
     secs.setText(String.valueOf(ent.getSec()));
 
-    if (ent instanceof Run) {
-      Run run = (Run)ent;
-      // Fill Run specific fields
-      runDist.setText(String.valueOf(run.getDistance()));
-      repDist.setText(String.valueOf(run.getDistance()));
-      recMins.setText(String.valueOf(run.getRecoveryMins()));
+    if (ent instanceof Reps) {
+      Reps reps = (Reps)ent;
+      // Fill Reps specific fields
+      repsTotalDist.setText(String.valueOf(reps.getDistance()));
+      repDist.setText(String.valueOf(reps.getDistance()));
+      recMins.setText(String.valueOf(reps.getRecoveryMins()));
       // Show the correct type and panel
-      entryType.setSelectedItem(RUN_ENTRY);
-      cl.show(cards, RUN_ENTRY);
+      entryType.setSelectedItem(REPS_ENTRY);
+      cl.show(cards, REPS_ENTRY);
     } else {
       entryType.setSelectedItem(GENERIC_ENTRY);
       cl.show(cards, GENERIC_ENTRY);

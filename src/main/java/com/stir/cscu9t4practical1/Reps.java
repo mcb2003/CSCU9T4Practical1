@@ -2,12 +2,12 @@
 // session
 package com.stir.cscu9t4practical1;
 
-public class Run extends DistanceTraining {
+public class Reps extends DistanceTraining {
   private float repDistance;
   private int recoveryMins;
 
-  public Run(String n, int d, int m, int y, int h, int min, int s, float dist,
-             float repDist, int recMins) {
+  public Reps(String n, int d, int m, int y, int h, int min, int s, float dist,
+              float repDist, int recMins) {
     super(n, d, m, y, h, min, s, dist); // Call base ctor
     repDistance = repDist;
     recoveryMins = recMins;
@@ -30,4 +30,4 @@ public class Run extends DistanceTraining {
         getYear());
   }
 
-} // Run
+} // Reps
