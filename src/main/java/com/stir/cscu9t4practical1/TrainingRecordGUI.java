@@ -116,6 +116,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     String message = "Record added\n";
     System.out.println("Adding " + what + " entry to the records");
     String n = name.getText();
+    if (n.isEmpty()) {
+      return "Invalid input: Name is required";
+    }
     int m, d, y;
     float km;
     int h, mm, s;
