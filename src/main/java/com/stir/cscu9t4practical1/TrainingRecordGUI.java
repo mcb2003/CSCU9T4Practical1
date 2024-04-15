@@ -27,6 +27,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
   private JLabel labdist = new JLabel(" Distance (km):");
   private JButton addR = new JButton("Add");
   private JButton lookUpByDate = new JButton("Look Up");
+  private JButton findAllByDate = new JButton("Find All");
 
   private TrainingRecord myAthletes = new TrainingRecord();
 
@@ -82,6 +83,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     add(lookUpByDate);
     lookUpByDate.setMnemonic(KeyEvent.VK_L);
     lookUpByDate.addActionListener(this);
+    add(findAllByDate);
+    findAllByDate.setMnemonic(KeyEvent.VK_F);
+    findAllByDate.addActionListener(this);
     add(outputArea);
     outputArea.setEditable(false);
     outputArea.getAccessibleContext().setAccessibleName("Output area");
@@ -99,9 +103,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     String message = "";
     if (event.getSource() == addR) {
       message = addEntry("generic");
-    }
-    if (event.getSource() == lookUpByDate) {
+    } else if (event.getSource() == lookUpByDate) {
       message = lookupEntry();
+    } else if (event.getSource() == lookUpByDate) {
+      message = "Not implemented";
     }
     outputArea.setText(message);
     blankDisplay();
