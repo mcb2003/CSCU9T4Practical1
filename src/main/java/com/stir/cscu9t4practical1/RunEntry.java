@@ -2,9 +2,10 @@
 // session
 package com.stir.cscu9t4practical1;
 
-public class Run extends DistanceTraining {
+public class RunEntry extends DistanceEntry {
 
-  public Run(String n, int d, int m, int y, int h, int min, int s, float dist) {
+  public RunEntry(String n, int d, int m, int y, int h, int min, int s,
+                  float dist) {
     super(n, d, m, y, h, min, s, dist); // Call base ctor
   }
 
@@ -15,4 +16,4 @@ public class Run extends DistanceTraining {
                          getSec(), getDay(), getMonth(), getYear());
   }
 
-} // Run
+} // RunEntry

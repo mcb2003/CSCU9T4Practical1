@@ -1,12 +1,12 @@
 // This class holds information about a single Cycling training session
 package com.stir.cscu9t4practical1;
 
-public class Cycle extends DistanceTraining {
+public class CycleEntry extends DistanceEntry {
   String terrain;
   float tempo;
 
-  public Cycle(String n, int d, int m, int y, int h, int min, int s, float dist,
-               String t, float rpm) {
+  public CycleEntry(String n, int d, int m, int y, int h, int min, int s,
+                    float dist, String t, float rpm) {
     super(n, d, m, y, h, min, s, dist); // Call base ctor
     terrain = t;
     tempo = rpm;
@@ -26,4 +26,4 @@ public class Cycle extends DistanceTraining {
         getSec(), getDay(), getMonth(), getYear());
   }
 
-} // Cycle
+} // CycleEntry

@@ -1,10 +1,10 @@
-// This class holds information about a single Swimning training session
+// This class holds information about a single SwimEntryning training session
 package com.stir.cscu9t4practical1;
 
-public class Swim extends DistanceTraining {
+public class SwimEntry extends DistanceEntry {
   private Boolean inPool;
 
-  public Swim(String n, int d, int m, int y, int h, int min, int s, float dist,
+  public SwimEntry(String n, int d, int m, int y, int h, int min, int s, float dist,
               Boolean pool) {
     super(n, d, m, y, h, min, s, dist); // Call base ctor
     inPool = pool;
@@ -22,4 +22,4 @@ public class Swim extends DistanceTraining {
                          getMin(), getSec(), getDay(), getMonth(), getYear());
   }
 
-} // Swim
+} // SwimEntry

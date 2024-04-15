@@ -252,17 +252,17 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     if (what.equals(GENERIC_ENTRY)) {
       e = new Entry(n, d, m, y, h, mm, s);
     } else if (what.equals(RUN_ENTRY)) {
-      // Validate Run specific fields
+      // Validate RunEntry specific fields
       float dist;
       try {
         dist = Float.parseFloat(runTotalDist.getText());
       } catch (NumberFormatException err) {
         return "Input is not a number: " + err.getLocalizedMessage();
       }
-      e = new Run(n, d, m, y, h, mm, s, dist);
+      e = new RunEntry(n, d, m, y, h, mm, s, dist);
 
     } else if (what.equals(REPS_ENTRY)) {
-      // Validate Reps specific fields
+      // Validate RepsEntry specific fields
       float dist, repLength;
       int recTime;
       try {
@@ -272,10 +272,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       } catch (NumberFormatException err) {
         return "Input is not a number: " + err.getLocalizedMessage();
       }
-      e = new Reps(n, d, m, y, h, mm, s, dist, repLength, recTime);
+      e = new RepsEntry(n, d, m, y, h, mm, s, dist, repLength, recTime);
 
     } else if (what.equals(CYCLE_ENTRY)) {
-      // Validate Cycle specific fields
+      // Validate CycleEntry specific fields
       float dist, tempo;
       String terrain = cycleTerrain.getText();
       try {
@@ -284,10 +284,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
       } catch (NumberFormatException err) {
         return "Input is not a number: " + err.getLocalizedMessage();
       }
-      e = new Cycle(n, d, m, y, h, mm, s, dist, terrain, tempo);
+      e = new CycleEntry(n, d, m, y, h, mm, s, dist, terrain, tempo);
 
     } else if (what.equals(SWIM_ENTRY)) {
-      // Validate Swim specific fields
+      // Validate SwimEntry specific fields
       float dist;
       try {
         dist = Float.parseFloat(swimTotalDist.getText());
@@ -295,7 +295,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         return "Input is not a number: " + err.getLocalizedMessage();
       }
       Boolean inPool = swimInPool.isSelected();
-      e = new Swim(n, d, m, y, h, mm, s, dist, inPool);
+      e = new SwimEntry(n, d, m, y, h, mm, s, dist, inPool);
 
     } else {
       return "Invalid Entry type: " + what;
@@ -363,34 +363,34 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     mins.setText(String.valueOf(ent.getMin()));
     secs.setText(String.valueOf(ent.getSec()));
 
-    if (ent instanceof Run) {
-      Run run = (Run)ent;
-      // Fill Reps specific fields
+    if (ent instanceof RunEntry) {
+      RunEntry run = (RunEntry)ent;
+      // Fill RepsEntry specific fields
       runTotalDist.setText(String.valueOf(run.getDistance()));
       // Show the correct type and panel
       entryType.setSelectedItem(RUN_ENTRY);
       cl.show(cards, RUN_ENTRY);
-    } else if (ent instanceof Reps) {
-      Reps reps = (Reps)ent;
-      // Fill Reps specific fields
+    } else if (ent instanceof RepsEntry) {
+      RepsEntry reps = (RepsEntry)ent;
+      // Fill RepsEntry specific fields
       repsTotalDist.setText(String.valueOf(reps.getDistance()));
       repDist.setText(String.valueOf(reps.getDistance()));
       recMins.setText(String.valueOf(reps.getRecoveryMins()));
       // Show the correct type and panel
       entryType.setSelectedItem(REPS_ENTRY);
       cl.show(cards, REPS_ENTRY);
-    } else if (ent instanceof Cycle) {
-      Cycle cycle = (Cycle)ent;
-      // Fill Reps specific fields
+    } else if (ent instanceof CycleEntry) {
+      CycleEntry cycle = (CycleEntry)ent;
+      // Fill RepsEntry specific fields
       cycleTotalDist.setText(String.valueOf(cycle.getDistance()));
       cycleTerrain.setText(cycle.getTerrain());
       cycleTempo.setText(String.valueOf(cycle.getTempo()));
       // Show the correct type and panel
       entryType.setSelectedItem(CYCLE_ENTRY);
       cl.show(cards, CYCLE_ENTRY);
-    } else if (ent instanceof Swim) {
-      Swim swim = (Swim)ent;
-      // Fill Reps specific fields
+    } else if (ent instanceof SwimEntry) {
+      SwimEntry swim = (SwimEntry)ent;
+      // Fill RepsEntry specific fields
       swimTotalDist.setText(String.valueOf(swim.getDistance()));
       swimInPool.setSelected(swim.getInPool());
       // Show the correct type and panel
