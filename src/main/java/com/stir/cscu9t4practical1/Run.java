@@ -2,7 +2,7 @@
 // session
 package com.stir.cscu9t4practical1;
 
-public class Run extends Entry {
+public class Run extends DistanceTraining {
   private float repDistance;
   private int recoveryMins;
 
@@ -24,7 +24,7 @@ public class Run extends Entry {
   @Override
   public String getEntry() {
     return String.format(
-        "%s ran %f %f km reps = %f km, with %d mins recovery, in %02d:%02d:%02d on %02d/%02d/%d",
+        "%s ran %g %g km reps = %g km, with %d mins recovery, in %02d:%02d:%02d on %02d/%02d/%d\n",
         getName(), getNumReps(), getRepDistance(), getDistance(),
         getRecoveryMins(), getHour(), getMin(), getSec(), getDay(), getMonth(),
         getYear());
